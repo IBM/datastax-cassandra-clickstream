@@ -28,7 +28,7 @@ Whether you choose DSE or an open source distribution of Cassandra, DataStax is 
 
 ## NoSQL, SQL, and CQL
 
-Cassandra is often considered a "NoSQL" database, but as you use it, you will see a language that sure looks like SQL. That's awkward. First of all, it might help to say that "NoSQL" is short for "not only SQL" (or maybe just don't use that term at all). The key thing to remember is that Cassandra was designed to excel and some things that traditional relation databases are not so good at. Along with the benefits of this specialization, Cassandra also comes with some things that you cannot or should not do.
+Cassandra is often considered a "NoSQL" database, but as you use it, you will see a language that sure looks like SQL. That's awkward. First of all, it might help to say that "NoSQL" is short for "not only SQL" (or maybe just don't use that term at all). The key thing to remember is that Cassandra was designed to excel at some things that traditional relation databases are not so good at. Along with the benefits of this specialization, Cassandra also comes with some things that you cannot or should not do.
 
 In this code pattern, you will create a database that is distributed and highly scalable. Cassandra is optimized for low latency fast writes. Reads across partitions are more expensive. Our data model will need to consider what queries will need to be supported with denormalized tables. In some cases, queries that you might use with a traditional relational database (RDBMS) will not be allowed (or you might get a warning).
 
@@ -181,7 +181,6 @@ UPDATE ks1.product
 ```
 
 ![img_3.png](doc/source/images/img_3.png)
-
 
 ### Using batches
 

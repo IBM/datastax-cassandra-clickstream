@@ -1,3 +1,6 @@
+>>> WORK-IN-PROGRESS
+
+TODO: clone repo (with yaml files) and/or download the yaml files
 # Install on OpenShift
 
 ## Create a project / namespace
@@ -59,7 +62,7 @@ crc-pkjt4-master-0   Ready    master,worker   8d    v1.20.0+df9c838
 
 ```bash
 cd config
-vi storage.yaml)
+vi storage.yaml
 oc create -f storage.yaml
 ```
 
