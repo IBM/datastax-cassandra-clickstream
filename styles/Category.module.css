@@ -1,0 +1,42 @@
+.card {
+    margin: 0.5rem;
+    flex: 1 1 auto;
+    position: relative;
+}
+
+.image {
+    object-fit: cover;
+    border: 2px solid black;
+    transition: all 5s cubic-bezier(0.14, 0.96, 0.91, 0.6);
+}
+
+.info {
+    font-family: Arial;
+    text-transform: uppercase;
+    position: absolute;
+    width: 80%;
+    top: 83%;
+    left: 50%;
+    color: cornsilk;
+    padding: 1.5rem;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+
+.card:hover .image {
+  transform: scale(1.5);
+}
+  
+.card:hover .info {
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    border: 1px solid;
+}
+
+.save {
+    color: rgb(245, 241, 137);
+
+}
+
