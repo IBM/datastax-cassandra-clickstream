@@ -10,7 +10,7 @@ const CategoryPage = ({ products }) => {
 
   return (
     <div className={styles.container}>
-      <p>Products in the "{router.query.category}" category:</p>
+      <p>Products in the <i>{router.query.category}</i> category:</p>
       <div className={styles.cards}>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} image={product.image} />

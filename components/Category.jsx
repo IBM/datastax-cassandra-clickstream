@@ -5,9 +5,9 @@ import styles from '../styles/Category.module.css';
 const Category = ({ image, name }) => {
     return (
         <div className={styles.card}>
-            <Link href={`/category/${name.toLowerCase()}`}>
+            <Link href={`/category/${name.toLowerCase()}`} passHref>
                 <div>
-                    <Image className={styles.image} src={image} height={700} width={1300} />
+                    <Image alt={image.id} className={styles.image} src={image} height={700} width={1300} />
                     <h3 className={styles.info}>{name}</h3>
                 </div>
             </Link>
