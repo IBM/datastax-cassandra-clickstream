@@ -1,7 +1,25 @@
->>> WORK-IN-PROGRESS
+# Deploy on OpenShift with CodeReady Containers
 
-TODO: clone repo (with yaml files) and/or download the yaml files
-# Install on OpenShift
+## Local development with OpenShift
+
+[CodeReady Containers](https://developers.redhat.com/products/codeready-containers/overview) is the quickest way to get started building OpenShift clusters. It is designed to run on a local computer to simplify setup and testing, and emulate the cloud development environment locally with all of the tools needed to develop container-based applications.
+
+> Note: CodeReady Containers (OpenShift 4.x) replaces Minishift (OpenShift 3.x) which was forked from minikube.
+
+## Prerequisites
+
+* [Install CodeReady Containers](https://developers.redhat.com/blog/2019/09/05/red-hat-openshift-4-on-your-laptop-introducing-red-hat-codeready-containers)
+
+## Login as kubeadmin
+
+```bash
+eval $(crc oc-env)
+crc console --credentials
+# Copy the admin login command from the output and run it
+oc login -u kubeadmin ... # password etc from above...
+oc get nodes
+# Copy the node name for yaml files
+```
 
 ## Create a project / namespace
 
@@ -13,7 +31,7 @@ oc new-project <project-name>
 
 ## Configure webhooks
 
-Edit the config YAML in the `config` directory of your cloned repo:
+Edit/review the config YAML in the `config` directory of your cloned repo. Replace `<project-name>` with the project/namespace you created above in the two files that require it.
 
 * webhook_service.yaml
 * webhook_configuration.yaml
