@@ -18,7 +18,7 @@ const ProductCard = ({ product, image }) => {
   const dispatch = useDispatch();
     return (
     <div className={styles}>
-        <Image className={styles.img} src={product.image} placeholder="blur" height={420} width={280}/>
+        <Image className={styles.img} alt={product.product} src={product.image} placeholder="blur" height={420} width={280}/>
       <h4 className={styles.title}>{product.product}</h4>
       <h5 className={styles.category}>{product.category}</h5>
       <p>$ {product.price}</p>

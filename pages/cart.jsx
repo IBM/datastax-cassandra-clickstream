@@ -37,7 +37,7 @@ const CartPage = () => {
           {cart.map((item) => (
             <div key={item.id} className={styles.body}>
               <div className={styles.image}>
-                <Image src={item.image} height="90" width="65" />
+                <Image alt={item.id} src={item.image} height="90" width="65" />
               </div>
               <p>{item.product}</p>
               <p>{item.price.toLocaleString("en-US", {style:"currency", currency:"USD"})}</p>
