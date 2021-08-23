@@ -17,10 +17,21 @@ async function addToCart(product, category, price) {
     execCQL(query, params);
 }
 
-const client = new Client({
-    cloud: { secureConnectBundle: process.env.DSE_SECURE_CONNECT_BUNDLE },
-    credentials: { username: process.env.DSE_USERNAME, password: process.env.DSE_PASSWORD }
-});
+const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
+const username = process.env.DSE_USERNAME;
+const options = {};
+
+if (secureConnectBundle) {
+    options.cloud = { secureConnectBundle };
+} else {
+    options.contactPoints = ['0.0.0.0'];
+}
+if (username) {
+    options.credentials = { username, password: process.env.DSE_PASSWORD };
+}
+
+
+const client = new Client(options);
 client.connect(function (err) {
     if (err) return console.error(err);
     console.log('Connected to cluster with %d host(s): %j', client.hosts.length, client.hosts.keys());
