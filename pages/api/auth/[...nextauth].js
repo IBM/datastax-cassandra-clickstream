@@ -4,6 +4,8 @@ import Providers from "next-auth/providers"
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
+    // Change default site port from 3000 to 8080 (w/ .env override).
+    site: process.env.NEXTAUTH_URL || "http://localhost:8080",
     // https://next-auth.js.org/configuration/providers
     providers: [
         Providers.Credentials({
