@@ -17,36 +17,45 @@ async function addToCart(product, category, price) {
     execCQL(query, params);
 }
 
-const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
-const username = process.env.DSE_USERNAME;
 const options = {};
 
+const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
 if (secureConnectBundle) {
+    // Remote secure connection to DBaaS (e.g. IBM Cloud)
     options.cloud = { secureConnectBundle };
 } else {
-    options.contactPoints = ['0.0.0.0'];
-}
-if (username) {
-    options.credentials = { username, password: process.env.DSE_PASSWORD };
+    // cass-operator service accessible within the cluster
+    options.contactPoints = ['cluster1-dc1-service'];
 }
 
+// DSE_USERNAME (from .env file) or "username" from cluster1-superuser secret
+const username = process.env.DSE_USERNAME || process.env.username;
+const password = process.env.DSE_PASSWORD || process.env.password;
+if (username) {
+    options.credentials = { username, password };
+}
 
 const client = new Client(options);
 client.connect(function (err) {
-    if (err) return console.error(err);
-    console.log('Connected to cluster with %d host(s): %j', client.hosts.length, client.hosts.keys());
+    if (err) {
+        console.error(err);
+        } else {
+            console.log('Connected to cluster with %d host(s): %j',
+                client.hosts.length, client.hosts.keys());
+        }
 });
-
-function getClient() {
-    return client;
-}
 
 function execCQL(query, params) {
 
     const options = { prepare: true };
-    let client = getClient();
     // Execute a query
-    client.execute(query, params, options).then(r => console.log("execCQL sent: ", query, params));
+    if (client.execute) {
+        client.execute(query, params, options)
+            .then(r => console.log("execCQL sent: ", query, params))
+            .catch(r => console.log("execCQL error: ", r.message));
+    } else {
+        console.log('Not connected to a database for execCQL');
+    }
 }
 
 async function trackPageBrowsing(sessionPromise, page) {
