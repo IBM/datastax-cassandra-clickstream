@@ -57,7 +57,7 @@ Here are a few tips:
 
 * `USE <keyspace-name>;` is a good first command. Alternatively, you can specify your keyspace name with fully qualified tables names like `<keyspace-name>.<table-name>`.
 
-* Use `exit;` to terminte CQLSH.
+* Use `exit;` to terminate CQLSH.
 
 * Go back to the main [README.md](../../README.md) for detailed steps using CQLSH to:
   * Create a keyspace

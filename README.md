@@ -5,7 +5,7 @@ In this code pattern, we will create a database of ecommerce clickstream data wi
 When you have completed this code pattern, you will understand how to:
 
 * Select a cloud, cluster, or development platform for Apache Cassandra or DataStax Enterprise (DSE)
-* Provision DSE or a DataStax distribution of Apache Cassandra
+* Provision Databases for DataStax on IBM Cloud
 * Design and create a database for DSE
 * Use CQL and CQLSH to create and query your database
 * Use the Node.js client to interact with your database
@@ -34,51 +34,52 @@ In this code pattern, you will create a database that is distributed and highly 
 
 For specifics about the query language, refer to [The Cassandra Query Language (CQL)](http://cassandra.apache.org/doc/latest/cql/index.html). CQL will be familiar to SQL users, but you will want to keep the CQL documentation bookmarked while you learn the differences.
 
-# Steps
+## Steps
 
-1. Deploy DSE (or Apache Cassandra)
+1. Clone the repo
+1. Deploy the database
 1. Interact with your database using CQL and CQLSH
-1. Interact with your database using the DataStax Node.js clients
-## Step 1. Deploy DSE (or Apache Cassandra)
+1. Interact with your database using the DataStax Node.js client
 
-You can provide your own deployment of DSE for this code pattern. For more specific deployment instructions, we'll focus on OpenShift using an Operator on RedHat Marketplace or Databases for DataStax on IBM Cloud.
+## Step 1. Clone the repo
+
+```bash
+git clone https://github.com/IBM/datastax-cassandra-clickstream.git
+```
+
+## Step 2. Deploy the database
+
+Choose your platform and spin up a database:
 
 * Get a fully managed database-as-a-service with [IBM Cloud Databases for DataStax](https://www.ibm.com/cloud/blog/announcements/ibm-cloud-databases-for-datastax).
 * Avoid vendor lock-in with an OpenShift cluster running on any cloud or on-premise.
 
 ![datastax_platforms](doc/source/images/datastax_platforms.png)
 
-Choose your platform and spin up a database:
+For more specific deployment instructions and connection configuration, we'll focus on Databases for DataStax on IBM Cloud.
 
-* [Databases for DataStax on IBM Cloud](https://cloud.ibm.com/catalog/services/databases-for-cassandra)
-* [DataStax Operator on OpenShift](doc/source/crc.md)
+### Deploy a database using Databases for DataStax on IBM Cloud
 
-## Step 2. Interact with your database using CQL and CQLSH
+DataStax is a scale-out NoSQL database built on Apache Cassandra, designed for high-availability and workload flexibility. Databases for DataStax makes DataStax even better by managing it for you.
 
-Similar to all popular databases, perhaps the most common way to interact with your database is with a terminal shell and an interactive query tool. This is at the very least a tool you should have handy, and so it is how we'll get started.
+1. Find **Databases for DataStax** in the catalog [here](https://cloud.ibm.com/catalog/services/databases-for-cassandra)
+1. Select your options as described on the page
+1. Click the `Create` button
+   ![databases](doc/source/images/databases.png)
+1. Before connecting to your DataStax service, you must set your admin password as described [here](https://cloud.ibm.com/docs/databases-for-cassandra?topic=databases-for-cassandra-admin-password).
+   ![password](doc/source/images/password.png)
+1. Download the credentials from your provisioned service on IBM Cloud. They come in a zip file and include information about the hostname and certificates you can use for SSL based auth. This will be referred to as your **secure connection bundle**.
+   ![secure_bundle](doc/source/images/secure_bundle.png)
 
-For Cassandra, the tool is CQLSH. We'll demonstrate 2 ways of using CQLSH.
+## Step 3. Interact with your database using CQL and CQLSH
 
-1. Running CQLSH on a Cassandra container with a remote shell
-1. Running CQLSH locally and connecting to an external database
+Similar to all popular databases, perhaps the most common way to interact with your database is with a terminal shell and an interactive query tool. This is, at the very least, a tool you should have handy, and so it is how we'll get started.
 
-### Using a remote shell
-
-When you deploy using the DataStax Operator on OpenShift, you can run `cqlsh` using a remote shell to a container. This is convenient because `cqlsh` is already provided. It can also be a security feature. Although you would need access to the container to set it up, working this way allows you to have a database that is isolated to the cluster.
-
-Using the OpenShift `oc` command line, you can use the following commands:
-
-* `oc login` to login
-* `oc rsh` to run a remote shell
-* `oc rsync` if you need to copy a file
+For Cassandra, the tool is CQLSH. Here we'll demonstrate using CQLSH locally and connecting to an external database.
 
 ### Running CQLSH locally
 
 You can securely connect to a database with a public endpoint using CQLSH and a "secure connect bundle". This is typically how you would interact with a DBaaS, so we'll use Databases for DataStax on IBM Cloud as our example for running CQLSH locally and establishing a secure connection to remote database.
-
-#### Set your admin password
-
-Before connecting to your DataStax service, you must set your admin password as described [here](https://cloud.ibm.com/docs/databases-for-cassandra?topic=databases-for-cassandra-admin-password).
 
 #### Download CQLSH
 
@@ -90,16 +91,12 @@ Before connecting to your DataStax service, you must set your admin password as 
 * Hit the **Download** button
 * Extract the zip file:
   * On some platforms, double-click on the `.gz` file to unzip it
-  * Or use the tar command: `tar -xvf cqlsh-<version>-bin.tar.gz`
+  * Otherwise use the tar command: `tar -xvf cqlsh-<version>-bin.tar.gz`
 * The `cqlsh` executable is under the `bin` subdirectory
-
-#### Get your secure connection bundle
-
-Download the credentials from your provisioned service on IBM Cloud. They come in a zip file and include information about the hostname and certificates you can use for SSL based auth.
 
 #### Connect using CSQLSH
 
-Provide your user, password and path to the compressed file that contains the certificate to the CQLSH command:
+Provide your user, password and path to the secure connection bundle to the CQLSH command:
 
 ```shell
 ./bin/cqlsh -u admin -p <password> -b /<path_to_secure-connect-bundle.zip>
@@ -108,7 +105,7 @@ Provide your user, password and path to the compressed file that contains the ce
 #### Example output
 
 ```shell
-markstur@Marks-MacBook-Pro-2 cqlsh-6.8.5 % ./bin/cqlsh -u admin -p <admin-password> -b ../e5f60a65-3e97-40e7-9aef-14807b4be719-public.zip
+$ ./bin/cqlsh -u admin -p <admin-password> -b ../e5z99a65-3a99-40e7-9aef-12345b4zz999-public.zip
 Connected to datastax_enterprise at 127.0.0.1:9042.
 [cqlsh 6.8.0 | DSE 6.8.7 | CQL spec 3.4.5 | DSE protocol v2]
 Use HELP for help.
@@ -248,13 +245,17 @@ See DataStax documentation for [INSERT](https://docs.datastax.com/en/dse/6.8/cql
 A simple example to insert a row without allowing an update of an existing row.
 
 ```shell
-INSERT INTO ks1.product_demand (
+INSERT INTO ks1.product (
   product, demand
 ) values (
-  "handSanitizer", 100
+  'handSanitizer', 100
 )
  IF NOT EXISTS;
 ```
+
+Notice that in your output, the `[applied]` value of `False` indicates that the insert was not applied and the returned demand value shows the existing value.
+
+![insert_if_not_exists](doc/source/images/insert_if_not_exists.png)
 
 ## Setup for the clickstream data
 
@@ -276,7 +277,20 @@ CREATE TABLE IF NOT EXISTS ks1.clickstream (
 );
 ```
 
-### Configure your .env file
+## Step 4. Interact with your database using the DataStax Node.js client
+
+![beecommerce_essentials](doc/source/images/beecommerce_essentials.png)
+
+### Using the DataStax Node.js client
+
+If you'd like to see the source code for interacting with the DataStax Node.js client, look in [services/clicks.service.js](services/clicks.service.js). Here we have:
+
+* A Client connection created based on the environment configuration
+* execCQL() to wrap our calls to the DataStax client.execute()
+* addToCart() to issue the parameterized CQL for the add to cart clicks
+* trackPageBrowsing() to issue teh parameterized CQL for page browsing clicks
+
+#### Configure your .env file
 
 * Copy **env.sample** to **.env**
 * Edit **.env** to set your:
@@ -291,31 +305,56 @@ DSE_SECURE_CONNECT_BUNDLE=/Users/<your-user>/Downloads/e5f60a65-3e97-40e7-9aef-1
 DSE_USERNAME=<your-username>
 DSE_PASSWORD=<your-password>
 DSE_KEYSPACE=<your-keyspace-name>
-
-# The app uses NEXTAUTH_URL (for signin/signout)
-NEXTAUTH_URL=http://localhost:8080
 ```
 
-### Use the ecommerce Node.js app for live clicks
+#### Start the Next.js web app in dev mode
 
-TODO: Document the web app
-
-#### Start the Next.js app in dev mode
+Run the following commands to install dependencies and run the web app in dev mode.
 
 ```bash
+npm install
 npm run dev
 ```
 
-> NOTE: For production you would build with `npm run build` and then start with `npm start`.
+> NOTE: For production you would build with `npm run build` and then `npm start` (instead of `npm dev`).
 
 #### Browse and click
 
-http://localhost:8080
+To use your local Bee-Commerce Essentials web app, browse to http://localhost:8080
 
+#### Sign in
+
+In order to get a **Customer ID**, the web app has a simple (fake) authentication implementation.
+
+* Click on the `Sign in` icon or link.
+  ![not_signed_in](doc/source/images/not_signed_in.png)
+* Enter any user ID
+* Ignore the password field
+* Click the `Sign in with Credentials` button
+  ![sign_in](doc/source/images/sign_in.png)
+* Notice the customer ID (it is simply a few character codes from your user name).
+  ![signed_in](doc/source/images/signed_in.png)
+
+> Note: When you are not signed in, we'll just use Customer ID 0 and still allow all the functionality.
+
+#### Browse and watch the logged output
+
+You can browse by clicking on the icons for storefront, the all products page (magnifier glass), and your cart. From the storefront, you can also browse a category. As you browse, watch your application output (or log) to see the clicks that are being logged. This is handled by the server-side rendering and the clickstream is fed into your DSE database (if properly configured).
+
+![browse_logged](doc/source/images/browse_logged.png)
+
+#### Add products to your cart
+
+From a category page or the all products page, you can click on an `Add to cart` button. This will result in an add-to-cart click being logged and fed into your DSE table. The `Add to cart` is a client-side component. It uses a client-side React component which fetches a server-side API to interact with the database.
+
+![add_to_cart_logged](doc/source/images/add_to_cart_logged.png)
+
+<!-- TODO:
 #### Notice the data in logs and the table
 
-* TODO: Clean logging example after cleaned up
-* TODO: Clean query example
+* TODO: Need a clean database query example
+* TODO: Improve the logging example after cleaned up
+-->
 
 ## Links
 
