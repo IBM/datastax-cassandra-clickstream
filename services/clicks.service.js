@@ -17,7 +17,7 @@ async function addToCart(product, category, price) {
     execCQL(query, params);
 }
 
-const options = { protocolOptions: { maxVersion: 5 } };
+const options = { protocolOptions: { maxVersion: -1 } };
 
 
 const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
