@@ -17,7 +17,8 @@ async function addToCart(product, category, price) {
     execCQL(query, params);
 }
 
-const options = {};
+const options = { protocolOptions: { maxVersion: 5 } };
+
 
 const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
 if (secureConnectBundle) {
@@ -27,6 +28,8 @@ if (secureConnectBundle) {
     // cass-operator service accessible within the cluster
     options.contactPoints = ['cluster1-dc1-service'];
 }
+
+console.log("OPTIONS: ", options);
 
 // DSE_USERNAME (from .env file) or "username" from cluster1-superuser secret
 const username = process.env.DSE_USERNAME || process.env.username;
