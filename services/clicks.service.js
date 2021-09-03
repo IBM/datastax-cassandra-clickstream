@@ -1,5 +1,6 @@
-const { Client, types } = require('dse-driver');
+const { Client, types, auth } = require('dse-driver');
 const protocolVersion = types.protocolVersion;
+var PlainTextAuthProvider = auth.PlainTextAuthProvider;
 
 async function addToCart(product, category, price) {
 
@@ -28,6 +29,7 @@ if (secureConnectBundle) {
 } else {
     // cass-operator service accessible within the cluster
     options.contactPoints = ['cluster1-dc1-service'];
+    options.authProvider = new PlainTextAuthProvider('cassandra', 'cassandra');
 }
 
 console.log("OPTIONS: ", options);
