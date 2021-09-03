@@ -1,4 +1,5 @@
-const { Client } = require('dse-driver');
+const { Client, types } = require('dse-driver');
+const protocolVersion = types.protocolVersion;
 
 async function addToCart(product, category, price) {
 
@@ -17,7 +18,7 @@ async function addToCart(product, category, price) {
     execCQL(query, params);
 }
 
-const options = { protocolOptions: { maxVersion: -1 } };
+const options = { protocolOptions: { maxVersion: protocolVersion.v4 } };
 
 
 const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
