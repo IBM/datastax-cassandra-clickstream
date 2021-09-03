@@ -34,6 +34,8 @@ if (secureConnectBundle) {  // IBM Cloud Databases for DSE
 } else {  // cass-operator on OpenShift
     // cass-operator service accessible within the cluster
     options.contactPoints = ['cluster1-dc1-service'];
+    options.localDataCenter = 'dc1';
+    options.keyspace = 'ks1';
     options.authProvider = new PlainTextAuthProvider(username, password);
 }
 
