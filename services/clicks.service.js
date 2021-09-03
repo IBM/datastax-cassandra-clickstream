@@ -1,6 +1,6 @@
 const { Client, types, auth } = require('dse-driver');
 const protocolVersion = types.protocolVersion;
-var PlainTextAuthProvider = auth.PlainTextAuthProvider;
+const PlainTextAuthProvider = auth.PlainTextAuthProvider;
 
 async function addToCart(product, category, price) {
 
@@ -25,21 +25,21 @@ const options = { protocolOptions: { maxVersion: protocolVersion.v4 } };
 // DSE_USERNAME (from .env file) or "username" from cluster1-superuser secret
 const username = process.env.DSE_USERNAME || process.env.username;
 const password = process.env.DSE_PASSWORD || process.env.password;
+const keyspace = process.env.DSE_KEYSPACE || 'ks1';  // default ks1
 
 const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
-if (secureConnectBundle) {  // IBM Cloud Databases for DSE
+if (secureConnectBundle) {  // IBM Cloud Databases for DataStax
     // Remote secure connection to DBaaS (e.g. IBM Cloud)
     options.cloud = { secureConnectBundle };
     options.credentials = { username, password };
+    options.keyspace = keyspace;
 } else {  // cass-operator on OpenShift
     // cass-operator service accessible within the cluster
     options.contactPoints = ['cluster1-dc1-service'];
     options.localDataCenter = 'dc1';
-    options.keyspace = 'ks1';
+    options.keyspace = keyspace;
     options.authProvider = new PlainTextAuthProvider(username, password);
 }
-
-console.log("OPTIONS: ", options);
 
 const client = new Client(options);
 client.connect(function (err) {
