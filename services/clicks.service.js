@@ -1,4 +1,6 @@
-const { Client } = require('dse-driver');
+const { Client, types, auth } = require('dse-driver');
+const protocolVersion = types.protocolVersion;
+const PlainTextAuthProvider = auth.PlainTextAuthProvider;
 
 async function addToCart(product, category, price) {
 
@@ -17,22 +19,26 @@ async function addToCart(product, category, price) {
     execCQL(query, params);
 }
 
-const options = {};
-
-const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
-if (secureConnectBundle) {
-    // Remote secure connection to DBaaS (e.g. IBM Cloud)
-    options.cloud = { secureConnectBundle };
-} else {
-    // cass-operator service accessible within the cluster
-    options.contactPoints = ['cluster1-dc1-service'];
-}
+// Don't try using v5-beta with the current driver (for now)
+const options = { protocolOptions: { maxVersion: protocolVersion.v4 } };
 
 // DSE_USERNAME (from .env file) or "username" from cluster1-superuser secret
 const username = process.env.DSE_USERNAME || process.env.username;
 const password = process.env.DSE_PASSWORD || process.env.password;
-if (username) {
+const keyspace = process.env.DSE_KEYSPACE || 'ks1';  // default ks1
+
+const secureConnectBundle = process.env.DSE_SECURE_CONNECT_BUNDLE;
+if (secureConnectBundle) {  // IBM Cloud Databases for DataStax
+    // Remote secure connection to DBaaS (e.g. IBM Cloud)
+    options.cloud = { secureConnectBundle };
     options.credentials = { username, password };
+    options.keyspace = keyspace;
+} else {  // cass-operator on OpenShift
+    // cass-operator service accessible within the cluster
+    options.contactPoints = ['cluster1-dc1-service'];
+    options.localDataCenter = 'dc1';
+    options.keyspace = keyspace;
+    options.authProvider = new PlainTextAuthProvider(username, password);
 }
 
 const client = new Client(options);
