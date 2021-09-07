@@ -4,19 +4,17 @@ import Providers from "next-auth/providers"
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 export default NextAuth({
-    // Change default site port from 3000 to 8080 (w/ .env override).
-    site: process.env.NEXTAUTH_URL || "http://localhost:8080",
     // https://next-auth.js.org/configuration/providers
     providers: [
         Providers.Credentials({
             // The name to display on the sign in form (e.g. 'Sign in with...')
-            name: 'Credentials',
+            name: 'username',
             // The credentials is used to generate a suitable form on the sign in page.
             // You can specify whatever fields you are expecting to be submitted.
             // e.g. domain, username, password, 2FA token, etc.
             credentials: {
                 username: { label: "Username", type: "text", placeholder: "Your name here" },
-                password: {  label: "Password", type: "password", placeholder: "password not used" }
+                // password: {  label: "Password", type: "password", placeholder: "password not used" }
             },
             async authorize(credentials, req) {
                 // You need to provide your own logic here that takes the credentials
@@ -126,7 +124,8 @@ export default NextAuth({
     // when an action is performed.
     // https://next-auth.js.org/configuration/callbacks
     callbacks: {
-        async signIn(user, account, profile) { return user },
+        // async signIn(user, account, profile) { return user },
+        // async signOut(user, account, profile) { return true },
         // async redirect(url, baseUrl) { return baseUrl },
         async session(session, user) { return user },
         // async jwt(token, user, account, profile, isNewUser) { return user }
