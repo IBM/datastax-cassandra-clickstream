@@ -6,7 +6,7 @@ const cartSlice = createSlice({
     initialState: [ ],
     reducers: {
       addToCart: (state, action) => {
-        fetch("http://localhost:8080/api/products",  // TODO: rename
+        fetch("/api/products",
             {
               method: "POST",
               body: JSON.stringify(action.payload),

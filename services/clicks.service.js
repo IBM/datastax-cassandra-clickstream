@@ -2,9 +2,8 @@ const { Client, types, auth } = require('dse-driver');
 const protocolVersion = types.protocolVersion;
 const PlainTextAuthProvider = auth.PlainTextAuthProvider;
 
-async function addToCart(product, category, price) {
+async function addToCart(customer_id, product, category, price) {
 
-    let customer_id = 345678
     console.log("Add to cart : ", customer_id, product, category );
 
     const query = "INSERT into ks1.clickstream (" +
