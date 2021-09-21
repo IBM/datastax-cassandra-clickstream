@@ -53,5 +53,4 @@ admin@cqlsh> exit
 
 Go back to the README.md and follow the instructions to interact with the database using CQLSH.
 
-[![return](https://raw.githubusercontent.com/IBM/pattern-utils/master/deploy-buttons/return.png)](../../README.md#4-use-the-web-app)
-
+[![return](https://raw.githubusercontent.com/IBM/pattern-utils/master/deploy-buttons/return.png)](../../README.md#step-3-interact-with-your-database-using-cql-and-cqlsh)
