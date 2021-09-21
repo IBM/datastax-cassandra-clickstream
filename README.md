@@ -56,61 +56,24 @@ Choose your platform and spin up a database:
 
 ![datastax_platforms](doc/source/images/datastax_platforms.png)
 
-For more specific deployment instructions and connection configuration, we'll focus on Databases for DataStax on IBM Cloud.
+Click on one of the following links for specific instructions:
 
-### Deploy a database using Databases for DataStax on IBM Cloud
-
-DataStax is a scale-out NoSQL database built on Apache Cassandra, designed for high-availability and workload flexibility. Databases for DataStax makes DataStax even better by managing it for you.
-
-1. Find **Databases for DataStax** in the catalog [here](https://cloud.ibm.com/catalog/services/databases-for-cassandra)
-1. Select your options as described on the page
-1. Click the `Create` button
-   ![databases](doc/source/images/databases.png)
-1. Before connecting to your DataStax service, you must set your admin password as described [here](https://cloud.ibm.com/docs/databases-for-cassandra?topic=databases-for-cassandra-admin-password).
-   ![password](doc/source/images/password.png)
-1. Download the credentials from your provisioned service on IBM Cloud. They come in a zip file and include information about the hostname and certificates you can use for SSL based auth. This will be referred to as your **secure connection bundle**.
-   ![secure_bundle](doc/source/images/secure_bundle.png)
+* [Deploy a database using Databases for DataStax on IBM Cloud](doc/source/dbaas.md)
+* [Deploy on OpenShift with Amazon Web Services](doc/source/aws.md)
 
 ## Step 3. Interact with your database using CQL and CQLSH
 
 Similar to all popular databases, perhaps the most common way to interact with your database is with a terminal shell and an interactive query tool. This is, at the very least, a tool you should have handy, and so it is how we'll get started.
 
-For Cassandra, the tool is CQLSH. Here we'll demonstrate using CQLSH locally and connecting to an external database.
+For Cassandra, the tool is CQLSH. Here we'll demonstrate using CQLSH to interact with the database. Connect to a CQLSH shell following the post-deployment instructions in Step 2. The following CQL examples are the same for either deployment type.
 
-### Running CQLSH locally
+Here are a few tips:
 
-You can securely connect to a database with a public endpoint using CQLSH and a "secure connect bundle". This is typically how you would interact with a DBaaS, so we'll use Databases for DataStax on IBM Cloud as our example for running CQLSH locally and establishing a secure connection to remote database.
+* Remember to terminate every command or query with a semi-colon (and then hit enter).
 
-#### Download CQLSH
+* `USE <keyspace-name>;` is a good first command. Alternatively, you can specify your keyspace name with fully qualified tables names like `<keyspace-name>.<table-name>`.
 
-![download_cqlsh.png](doc/source/images/download_cqlsh.png)
-
-* Browse to [https://downloads.datastax.com/#cqlsh](https://downloads.datastax.com/#cqlsh)
-* Select the your version
-* Click the box if you agree to the terms
-* Hit the **Download** button
-* Extract the zip file:
-  * On some platforms, double-click on the `.gz` file to unzip it
-  * Otherwise use the tar command: `tar -xvf cqlsh-<version>-bin.tar.gz`
-* The `cqlsh` executable is under the `bin` subdirectory
-
-#### Connect using CSQLSH
-
-Provide your user, password and path to the secure connection bundle to the CQLSH command:
-
-```shell
-./bin/cqlsh -u admin -p <password> -b /<path_to_secure-connect-bundle.zip>
-```
-
-#### Example output
-
-```shell
-$ ./bin/cqlsh -u admin -p <admin-password> -b ../e5z99a65-3a99-40e7-9aef-12345b4zz999-public.zip
-Connected to datastax_enterprise at 127.0.0.1:9042.
-[cqlsh 6.8.0 | DSE 6.8.7 | CQL spec 3.4.5 | DSE protocol v2]
-Use HELP for help.
-admin@cqlsh>
-```
+* Use `exit;` to terminate CQLSH.
 
 ### Create a keyspace
 
