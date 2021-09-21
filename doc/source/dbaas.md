@@ -19,7 +19,7 @@ You can securely connect to a database with a public endpoint using CQLSH and a 
 
 #### Download CQLSH
 
-![download_cqlsh.png](doc/source/images/download_cqlsh.png)
+![download_cqlsh.png](images/download_cqlsh.png)
 
 * Browse to [https://downloads.datastax.com/#cqlsh](https://downloads.datastax.com/#cqlsh)
 * Select the your version
