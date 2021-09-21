@@ -6,7 +6,7 @@ async function addToCart(customer_id, product, category, price) {
 
     console.log("Add to cart : ", customer_id, product, category );
 
-    const query = "INSERT into ks1.clickstream (" +
+    const query = "INSERT into clickstream (" +
         "customer_id, time_stamp, click_event_type, product_name, product_category, product_price, " +
         "total_price_of_basket, total_number_of_items_in_basket, total_number_of_distinct_items_in_basket, " +
         "session_duration" +
@@ -73,7 +73,7 @@ async function trackPageBrowsing(sessionPromise, page) {
     console.log("Track page browsing : ", page);
     console.log("customer_id : ", customer_id);
 
-    const query = "INSERT into ks1.clickstream (" +
+    const query = "INSERT into clickstream (" +
         "customer_id, time_stamp, click_event_type, product_name, product_category, product_price, " +
         "total_price_of_basket, total_number_of_items_in_basket, total_number_of_distinct_items_in_basket, " +
         "session_duration" +
