@@ -132,7 +132,7 @@ oc get secret cluster1-superuser -o yaml | grep " password" | awk -F" " '{print 
 
 ```
 
-### Interact with the database using CQLSH
+#### Connect using CSQLSH
 
 Use `oc rsh` to run the `cqlsh` command on the pod to interact with the database.
 
@@ -157,6 +157,8 @@ cluster1-superuser@cqlsh>
 cluster1-superuser@cqlsh> exit
 $ 
 ```
+
+## Interact with the database
 
 Go back to the README.md and follow the instructions to interact with the database using CQLSH.
 
