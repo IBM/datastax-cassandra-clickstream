@@ -16,11 +16,15 @@ For example, here we will guide you to setup this code pattern to run with Red H
 
 * Use your service URL and user login to access the OpenShift Console.
 * Click on your name in the upper-right corner and select **Copy login command** and copy the command under **Log in with this token**.
-* Use that provided login command to login to OpenShift in a terminal.
+* Use the provided login command to login to OpenShift in a terminal.
+
+```bash
+oc login --token=sha256~xxXxXXXxXXxX9xxx9XX9xxxx9XXXxX-XxXxXXXXxXxx --server=https://api.your_url.openshiftapps.com:6443
+```
 
 ## Create a project / namespace
 
-Create your project using the `oc` command line. Here we'll use **beecommerce** as the project name.
+Create your project using the `oc` command line. In our examples we'll use **beecommerce** as the project name.
 
 ```bash
 oc new-project beecommerce
@@ -52,41 +56,30 @@ oc create -f webhook_service.yaml
 * Select `OperatorHub`
 * Search for `datastax`
 * Click on the `DataStax Kubernetes Operator for Apache Cassandra` card
-
   ![aws_operatorhub](images/aws_operatorhub.png)
-
 * Review the prerequisites. You should have done them in the previous section (Webhook setup).
-
 * Click on the `Install` button!
 * Select the `A specific namespace on the cluster` radio button.
 * Select your namespace under `Installed Namespace`.
 * Select the `Manual` radio button under `Approval strategy`.
-
 * Install with manual approval:
-
   ![aws_install_operator](images/aws_install_operator.png)
-
 * Click on the `Install` button!
 * Click on the `Approve` button.
-* Wait for the "ready for use" message.
-
+* Wait for the **"ready for use"** message.
    ![aws_ready_for_use](images/aws_ready_for_use.png)
-
 * Click on the `View Operator` button.
 * Select the `CassandraDatacenter` tab.
 * Refresh the page.
-
 * Hit the `Create CassandraDatacenter` button.
-
   ![create_datacenter](images/create_datacenter.png)
-
 * Expand `Storage Configuration > Cassandra Data Volume Claim Spec >  Storage Class > Select Storage Class` and choose your storage class.  <!-- Maintainers note: using gp2 -->
-
   ![aws_storage_config](images/aws_storage_config.png)
-
 * Hit the `Create` button at the bottom.
 
 ### Check the pod status
+
+Use `oc get pods` to monitor the pod status. Watch for **cluster1-dc1-default-sts-0** to have **2/2** pods **READY** with a status of **Running**.
 
 ```bash
 $ oc get pods
@@ -108,7 +101,9 @@ cluster1-dc1-default-sts-0       2/2     Running   0          2m59s
 
 ### Use nodetool to check status
 
-```bash
+You can use `oc rsh` to run the `nodetool status` command on the pod to get more information about the deployment.
+
+```shell
 $ oc rsh cluster1-dc1-default-sts-0 nodetool status
 Defaulting container name to cassandra.
 Use 'oc describe pod/cluster1-dc1-default-sts-0 -n beecommerce' to see all of the containers in this pod.
@@ -122,7 +117,11 @@ UN  10.129.2.136  65.3 KiB   100.0%            488c7e8d-33b5-47f6-8164-08b03fb2b
 
 ## Connect with CQLSH
 
-### Get your user/pass and connect with CQLSH
+Installing the database using the operator does not include setting up ingress to connect directly to the database from outside the cluster. It is often a best practice to keep it this way. The database can be accessed by an application running inside the cluster without additional exposure. To interact with the database via CQLSH, we can use `oc rsh` to remote shell into the container and run the `cqlsh` command which was already installed by the operator.
+
+### Get the username and password from the secret
+
+The secret named **cluster1-superuser** contains a username and password that you can use to connect to your database. You will probably want to create additional users and passwords, but we'll use the one provided. You can copy the username and password from the secret using the OpenShift console, or you can obtain them using the `oc` commands shown below.
 
 ```bash
 # Get the CQL username
@@ -131,13 +130,20 @@ oc get secret cluster1-superuser -o yaml | grep " username" | awk -F" " '{print 
 # Get the CQL password
 oc get secret cluster1-superuser -o yaml | grep " password" | awk -F" " '{print $2}' | base64 -d && echo ""
 
+```
+
+### Interact with the database using CQLSH
+
+Use `oc rsh` to run the `cqlsh` command on the pod to interact with the database.
+
+```sh
 # Run CQLSH using the username and password obtained above
 oc rsh cluster1-dc1-default-sts-0 cqlsh -u <cql-username> -p <cql-password>
 ```
 
-Example with output:
+Example with output (and exit):
 
-```bash
+```shell
 $ oc rsh cluster1-dc1-default-sts-0 cqlsh -u cluster1-superuser -p 1OfZ2eNotreal6aa4PASSWDfan4USED9zzxHEREzztOCE9Ab3Um9fw 
 Defaulting container name to cassandra.
 Use 'oc describe pod/cluster1-dc1-default-sts-0 -n beecommerce' to see all of the containers in this pod.
@@ -151,3 +157,7 @@ cluster1-superuser@cqlsh>
 cluster1-superuser@cqlsh> exit
 $ 
 ```
+
+Go back to the README.md and follow the instructions to interact with the database using CQLSH.
+
+[![return](https://raw.githubusercontent.com/IBM/pattern-utils/master/deploy-buttons/return.png)](../../README.md#4-use-the-web-app)

@@ -5,7 +5,7 @@ In this code pattern, we will create a database of ecommerce clickstream data wi
 When you have completed this code pattern, you will understand how to:
 
 * Select a cloud, cluster, or development platform for Apache Cassandra or DataStax Enterprise (DSE)
-* Provision Databases for DataStax on IBM Cloud
+* Provision Databases on IBM Cloud or any cloud with OpenShift
 * Design and create a database for DSE
 * Use CQL and CQLSH to create and query your database
 * Use the Node.js client to interact with your database
@@ -135,7 +135,7 @@ See DataStax documentation for [CREATE TABLE](https://docs.datastax.com/en/dse/6
 When there is a one primary key column, it is also used as the partition key. You can specify `PRIMARY KEY` in the column definition.
 
 ```shell
-CREATE TABLE IF NOT EXISTS ks1.product (
+CREATE TABLE IF NOT EXISTS product (
   product TEXT PRIMARY KEY,
   demand INT
 );
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS ks1.product (
 When there are multiple columns in the key, use a separate `PRIMARY KEY (column_list)` as shown below. The additional parenthesis is used to indicate which part of the key should be used as the partition key.
 
 ```shell
-CREATE TABLE IF NOT EXISTS ks1.plant_product (
+CREATE TABLE IF NOT EXISTS plant_product (
   plant TEXT,
   product TEXT,
   cost DECIMAL,
@@ -166,18 +166,37 @@ In CQL, both the INSERT and the UPDATE commands act like an "UPSERT" unless "IF 
 See DataStax documentation for [UPDATE](https://docs.datastax.com/en/dse/6.8/cql/cql/cql_reference/cql_commands/cqlUpdate.html)
 
 ```shell
-UPDATE ks1.product
+UPDATE product
   SET demand = 300
   WHERE product = 'handSanitizer';
 ```
 
 ```shell
-UPDATE ks1.product
+UPDATE product
   SET demand = 500
   WHERE product = 'mask';
 ```
 
 ![img_3.png](doc/source/images/img_3.png)
+
+### Using insert without upserting
+
+See DataStax documentation for [INSERT](https://docs.datastax.com/en/dse/6.8/cql/cql/cql_reference/cql_commands/cqlInsert.html).
+
+A simple example to insert a row without allowing an update of an existing row.
+
+```shell
+INSERT INTO product (
+  product, demand
+) values (
+  'handSanitizer', 100
+)
+ IF NOT EXISTS;
+```
+
+Notice that in your output, the `[applied]` value of `False` indicates that the insert was not applied and the returned demand value shows the existing value.
+
+![insert_if_not_exists](doc/source/images/insert_if_not_exists.png)
 
 ### Using batches
 
@@ -194,75 +213,56 @@ Each plant is in a separate batch, so that the batch does not need to span parti
 
 ```shell
 BEGIN BATCH
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 10
   WHERE plant = '1'
     AND product = 'mask';
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 10
   WHERE plant = '1'
     AND product = 'handSanitizer';
 APPLY BATCH;
 
 BEGIN BATCH
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 20
   WHERE plant = '2'
     AND product = 'mask';
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 20
   WHERE plant = '2'
     AND product = 'handSanitizer';
 APPLY BATCH;
     
 BEGIN BATCH
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 30
   WHERE plant = '3'
     AND product = 'mask';
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 30
   WHERE plant = '3'
     AND product = 'handSanitizer';
 APPLY BATCH;
 
 BEGIN BATCH
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 40
   WHERE plant = '4'
     AND product = 'mask';
-UPDATE ks1.plant_product
+UPDATE plant_product
   SET cost = 500, capacity = 40
   WHERE plant = '4'
     AND product = 'handSanitizer';
 APPLY BATCH;
 ```
 
-### Using insert without upserting
-
-See DataStax documentation for [INSERT](https://docs.datastax.com/en/dse/6.8/cql/cql/cql_reference/cql_commands/cqlInsert.html).
-
-A simple example to insert a row without allowing an update of an existing row.
-
-```shell
-INSERT INTO ks1.product (
-  product, demand
-) values (
-  'handSanitizer', 100
-)
- IF NOT EXISTS;
-```
-
-Notice that in your output, the `[applied]` value of `False` indicates that the insert was not applied and the returned demand value shows the existing value.
-
-![insert_if_not_exists](doc/source/images/insert_if_not_exists.png)
-
 ## Setup for the clickstream data
 
 ### Create the table in your namespace
 
 ```shell
-CREATE TABLE IF NOT EXISTS ks1.clickstream (
+CREATE TABLE IF NOT EXISTS clickstream (
   customer_id INT,
   time_stamp TIMESTAMP,
   click_event_type TEXT,
@@ -288,7 +288,7 @@ If you'd like to see the source code for interacting with the DataStax Node.js c
 * A Client connection created based on the environment configuration
 * execCQL() to wrap our calls to the DataStax client.execute()
 * addToCart() to issue the parameterized CQL for the add to cart clicks
-* trackPageBrowsing() to issue teh parameterized CQL for page browsing clicks
+* trackPageBrowsing() to issue the parameterized CQL for page browsing clicks
 
 #### Configure your .env file
 
