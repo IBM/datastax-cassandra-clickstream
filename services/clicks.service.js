@@ -112,7 +112,19 @@ async function addToCart(customer_id, product, category, price) {
     execCQL(query, params);
 }
 
+async function getActivity(customer_id) {
+
+    console.log("CUSTOMER ID: ", customer_id);
+    console.log("Get activity : ", customer_id );
+
+    const query = "SELECT * from clickstream where customer_id = ? ALLOW FILTERING";
+    const params = [parseInt(customer_id)];
+    const options = { prepare: true };
+    return await client.execute(query, params, options)
+}
+
 export const clickService = {
     addToCart,
-    trackPageBrowsing
+    trackPageBrowsing,
+    getActivity
 };
