@@ -242,48 +242,35 @@ CREATE TABLE IF NOT EXISTS clickstream (
 
 ## Step 4. Interact with your database using the DataStax Node.js client
 
+### Using the DataStax Node.js driver
+
+To connect to DSE (or Apache Cassandra) from an application, use the DataStax Driver for your programming language listed [here](https://cloud.ibm.com/docs/databases-for-cassandra?topic=databases-for-cassandra-external-app#connecting-with-a-languages-driver). Our example application uses the Node.js driver. The **dse-driver** node module will be installed by npm.
+
+To connect the application to DSE, you need to configure credentials similar to what you used to connect with CQLSH.
+
+* Username
+* Password
+* Keyspace name
+* Secure bundle (for IBM Cloud)
+
+In addition, our sign-in/sign-out NextAuth code will need to be configured if your application is not accessible using the default URL (http://localhost:8080). If needed, set the NEXTAUTH_URL environment variable. In our examples, the default works as-is for running locally, but NEXTAUTH_URL is required when running on OpenShift.
+
+The application code will read the configuration from environment variables. These environment variables can be set different ways depending on where you are running the application. When running locally, we use a `.env` file. When running on OpenShift, we use secrets.
+
+### Configure and start the web app
+
+Click on one of the following links for specific instructions to configure and deploy the web app running locally or running on OpenShift.
+
+* [Run locally](doc/source/local_app.md)
+* [Deploy the web app on OpenShift with Amazon Web Services](doc/source/aws_app.md)
+
+### Use the web app
+
 ![beecommerce_essentials](doc/source/images/beecommerce_essentials.png)
-
-### Using the DataStax Node.js client
-
-If you'd like to see the source code for interacting with the DataStax Node.js client, look in [services/clicks.service.js](services/clicks.service.js). Here we have:
-
-* A Client connection created based on the environment configuration
-* execCQL() to wrap our calls to the DataStax client.execute()
-* addToCart() to issue the parameterized CQL for the add to cart clicks
-* trackPageBrowsing() to issue the parameterized CQL for page browsing clicks
-
-#### Configure your .env file
-
-* Copy **env.sample** to **.env**
-* Edit **.env** to set your:
-  * secure bundle zip path
-  * username
-  * password
-  * keyspace name
-
-```bash
-# DataStax connection parameters
-DSE_SECURE_CONNECT_BUNDLE=/Users/<your-user>/Downloads/e5f60a65-3e97-40e7-9aef-14807b4be719-public.zip
-DSE_USERNAME=<your-username>
-DSE_PASSWORD=<your-password>
-DSE_KEYSPACE=<your-keyspace-name>
-```
-
-#### Start the Next.js web app in dev mode
-
-Run the following commands to install dependencies and run the web app in dev mode.
-
-```bash
-npm install
-npm run dev
-```
-
-> NOTE: For production you would build with `npm run build` and then `npm start` (instead of `npm dev`).
 
 #### Browse and click
 
-To use your local Bee-Commerce Essentials web app, browse to http://localhost:8080
+To use your local Bee-Commerce Essentials web app, browse to http://localhost:8080. To use your app deployed on OpenShift, browse to the exposed route.
 
 #### Sign in
 
@@ -291,9 +278,8 @@ In order to get a **Customer ID**, the web app has a simple (fake) authenticatio
 
 * Click on the `Sign in` icon or link.
   ![not_signed_in](doc/source/images/not_signed_in.png)
-* Enter any user ID
-* Ignore the password field
-* Click the `Sign in with Credentials` button
+* Enter any user name
+* Click the `Sign in with username` button
   ![sign_in](doc/source/images/sign_in.png)
 * Notice the customer ID (it is simply a few character codes from your user name).
   ![signed_in](doc/source/images/signed_in.png)
@@ -308,16 +294,18 @@ You can browse by clicking on the icons for storefront, the all products page (m
 
 #### Add products to your cart
 
-From a category page or the all products page, you can click on an `Add to cart` button. This will result in an add-to-cart click being logged and fed into your DSE table. The `Add to cart` is a client-side component. It uses a client-side React component which fetches a server-side API to interact with the database.
+From a category page or the all products page, you can click on an `Add to cart` button. This will result in an add-to-cart click being logged and fed into your DSE table. The `Add to cart` is a client-side component. It uses a client-side React component which uses the server-side API to interact with the database.
 
 ![add_to_cart_logged](doc/source/images/add_to_cart_logged.png)
 
-<!-- TODO:
-#### Notice the data in logs and the table
+#### See the code
 
-* TODO: Need a clean database query example
-* TODO: Improve the logging example after cleaned up
--->
+If you'd like to see the source code for interacting with the DataStax Node.js client, look in [services/clicks.service.js](services/clicks.service.js). Here we have:
+
+* A Client connection created based on the environment configuration
+* execCQL() to wrap our calls to the DataStax client.execute()
+* addToCart() to issue the parameterized CQL for the add to cart clicks
+* trackPageBrowsing() to issue the parameterized CQL for page browsing clicks
 
 ## Links
 
