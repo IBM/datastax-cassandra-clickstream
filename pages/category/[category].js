@@ -5,8 +5,20 @@ import { getProductsByCategory } from '../api/products/[category]';
 import {clickService} from "../../services/clicks.service";
 import { getSession } from 'next-auth/client'
 
-const CategoryPage = ({ products }) => {
+import { useEffect } from "react";
+
+const CategoryPage = ({ products, started }) => {
   const router = useRouter();
+
+  useEffect(() => {
+    console.log("BROWSING: ", router.query.category);
+
+    return () => {
+      const ended = Math.round(Date.now()/1000);
+      console.log("LEAVING: ", router.query.category);
+      console.log("Time on page (secs): ", ended - started);
+    };
+  });
 
   return (
     <div className={styles.container}>
@@ -23,8 +35,10 @@ const CategoryPage = ({ products }) => {
 export default CategoryPage;
 
 export async function getServerSideProps(ctx) {
+
+  const started = Math.round(Date.now()/1000);
   const category = ctx.query.category;
   clickService.trackPageBrowsing(getSession(ctx), "/category/" + category);
   const products = await getProductsByCategory(category);
-  return { props: { products } };
+  return { props: { products, started } };
 }
