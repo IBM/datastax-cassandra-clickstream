@@ -69,16 +69,26 @@ You can create a secret or a config map and assign it to your workload using the
 * Select `Secrets`
 * Hit the `Create` button
 * Select `Key/value secret`
-* Give the secret a `Name`
+
+![create_key_value_secret](images/create_key_value_secret.png)
+* Give the secret a `Secret Name`
 * Set the first `Key` to `NEXTAUTH_URL`
 * In the text box under `Value` enter the host of your exposed service adding a prefix of `http://`. This is the URL you would use if you open your app in a browser.
 * *Optionally*, click on  `Add Key/Value` if you want to set a DSE_KEYSPACE (other than our default of *ks1*) or a DSE_USERNAME and DSE_PASSWORD to use instead of the superuser secret used above.
+* Hit the `Create` button
+
+![create_secret](images/create_secret.png)
+
 * Hit the `Add Secret to workload` button
+
+![add_secret_to_workload2](images/add_secret_to_workload2.png)
+
 * Use the `Select a workload` pulldown to select your application (e.g. *essentials* in our example).
 * Hit the `Save` button
 * The application will restart with an environment that includes the environment variables that you set using a key/value secret.
 
-![create_secret](images/create_secret.png)
+![add_secret_to_workload3](images/add_secret_to_workload3.png)
+
 
 ## Interact with the application
 
