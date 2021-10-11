@@ -1,12 +1,10 @@
 
-if (process.env.NEXTAUTH_URL) {
-  console.log("NEXTAUTH_URL is:  ", process.env.NEXTAUTH_URL );
+if (!process.env.NEXTAUTH_URL) {
+  console.warn("NEXTAUTH_URL is not set in env! This is required for app sign-in/sign-out.");
+  console.warn("NEXTAUTH_URL will default to http://localhost:8080 for local development.");
+  process.env.NEXTAUTH_URL = 'http://localhost:8080';
 }
-else {
-  console.warn("NEXTAUTH_URL is not set!");
-  process.env.NEXTAUTH_URL = 'http://0.0.0.0:8080';
-  console.log("Setting to:  ", process.env.NEXTAUTH_URL );
-}
+console.log("NEXTAUTH_URL: ", process.env.NEXTAUTH_URL );
 
 module.exports = {
   reactStrictMode: false,
